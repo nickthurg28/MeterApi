@@ -1,4 +1,4 @@
-﻿namespace Shared.Models
+﻿namespace MeterApi.Models
 {
     public class MeterReading
     {
@@ -6,7 +6,5 @@
         public int AccountId { get; set; }
         public DateTime MeterReadingDate { get; set; }
         public int MeterReadingValue { get; set; }
-
-        public Account Account { get; set; }
     }
 }

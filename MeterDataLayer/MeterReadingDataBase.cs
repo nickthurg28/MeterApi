@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shared.Models;
+using MeterShared.Models;
 
-namespace DataLayer
+namespace MeterDataLayer
 {
     public class MeterReadingDataBase : DbContext
     {
