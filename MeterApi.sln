@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeterDataLayer", "MeterData
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeterShared", "MeterShared\MeterShared.csproj", "{4AFB984C-EDA2-443C-8A66-3218BC834F8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeterreadingTests", "..\MeterreadingTests\MeterreadingTests.csproj", "{286FE5F3-6CBF-4542-BD80-96151CF9E9BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeterTests", "..\MeterTests\MeterTests.csproj", "{FB2F57ED-7385-4D84-8DE9-54D398F7B724}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +34,10 @@ Global
 		{4AFB984C-EDA2-443C-8A66-3218BC834F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AFB984C-EDA2-443C-8A66-3218BC834F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AFB984C-EDA2-443C-8A66-3218BC834F8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{286FE5F3-6CBF-4542-BD80-96151CF9E9BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{286FE5F3-6CBF-4542-BD80-96151CF9E9BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{286FE5F3-6CBF-4542-BD80-96151CF9E9BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{286FE5F3-6CBF-4542-BD80-96151CF9E9BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB2F57ED-7385-4D84-8DE9-54D398F7B724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB2F57ED-7385-4D84-8DE9-54D398F7B724}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB2F57ED-7385-4D84-8DE9-54D398F7B724}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB2F57ED-7385-4D84-8DE9-54D398F7B724}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

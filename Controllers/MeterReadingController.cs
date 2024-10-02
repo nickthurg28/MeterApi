@@ -5,6 +5,7 @@ using MeterDataLayer;
 using Microsoft.Data.Sqlite;
 using System.Globalization;
 using Dapper;
+using MeterApi.Models;
 
 namespace MeterApi.Controllers
 {
@@ -47,8 +48,8 @@ namespace MeterApi.Controllers
                         var readinDate = "";
                         if (!int.TryParse(fields[0], out var accountId)
                             || !int.TryParse(fields[2], out var meterReadingValue)
-                            || !System.Text.RegularExpressions.Regex.IsMatch(fields[2], @"^\d$")
-                            || !DateTime.TryParseExact(fields[1], "dd/MM/yyyy hh:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var readingDate)
+                            || !System.Text.RegularExpressions.Regex.IsMatch(fields[2], @"^\d+$")
+                            || !DateTime.TryParseExact(fields[1], "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var readingDate)
                             )
                         {
                             failedReadings++;
@@ -100,12 +101,14 @@ namespace MeterApi.Controllers
                     }
                 }
             }
-            return Ok(
-                new
-                {
-                    successfulReadings,
-                    failedReadings
-                });
+
+            var result = new UploadResult
+            {
+                SuccessfulReadings = successfulReadings,
+                FailedReadings = failedReadings
+            };
+
+            return Ok(result);
         }
     }
 }
