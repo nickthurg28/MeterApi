@@ -44,10 +44,12 @@ namespace MeterApi.Controllers
                             failedReadings++;
                             continue;
                         }
+                        var readinDate = "";
                         if (!int.TryParse(fields[0], out var accountId)
-                            || !int.TryParse(fields[1], out var meterReadingValue)
-                            || !System.Text.RegularExpressions.Regex.IsMatch(fields[1], @"^\d{5}$")
-                            || !DateTime.TryParseExact(fields[2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var readingDate))
+                            || !int.TryParse(fields[2], out var meterReadingValue)
+                            || !System.Text.RegularExpressions.Regex.IsMatch(fields[2], @"^\d$")
+                            || !DateTime.TryParseExact(fields[1], "dd/MM/yyyy hh:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var readingDate)
+                            )
                         {
                             failedReadings++;
                             continue;
