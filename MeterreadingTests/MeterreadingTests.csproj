@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,23 +7,28 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="xunit" Version="2.5.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MeterApi\MeterApi.csproj" />
-    <ProjectReference Include="..\MeterApi\MeterDataLayer\MeterDataLayer.csproj" />
-    <ProjectReference Include="..\MeterApi\MeterShared\MeterShared.csproj" />
+    <ProjectReference Include="..\MeterApi.csproj" />
+    <ProjectReference Include="..\MeterDataLayer\MeterDataLayer.csproj" />
+    <ProjectReference Include="..\MeterShared\MeterShared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

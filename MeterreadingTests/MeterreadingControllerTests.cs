@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Castle.Core.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -10,8 +11,10 @@ using MeterApi.Controllers;
 using MeterShared.Models;
 using Microsoft.Data.Sqlite;
 using MeterApi.Models;
+using Xunit;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
-namespace MeterApi.Tests
+namespace MeterreadingTests
 {
     public class MeterReadingControllerTests
     {

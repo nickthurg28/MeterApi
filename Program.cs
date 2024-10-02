@@ -11,16 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddDbContext<MeterReadingDataBase>(options =>
-//options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 var app = builder.Build();
-
-//using (var scope = app.Services.CreateScope())
-//{
-//    var dbContext = scope.ServiceProvider.GetRequiredService<MeterReadingDataBase>();
-//    await SeedTestAccountData(dbContext, "./SolutionItems/Test_Accounts.ods");
-//}
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var dbInitialiser = new DatabaseInitialiser(connectionString);
