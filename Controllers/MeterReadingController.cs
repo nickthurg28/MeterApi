@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using MeterShared.Models;
 using MeterDataLayer;
+using Microsoft.Data.Sqlite;
+using System.Globalization;
+using Dapper;
 
 namespace MeterApi.Controllers
 {
@@ -9,75 +12,98 @@ namespace MeterApi.Controllers
     [Route("[controller]")]
     public class MeterReadingController : Controller
     {
-        private readonly MeterReadingDataBase _databaseContext;
-        public MeterReadingController(MeterReadingDataBase databaseContext)
+        private readonly string _connectionString;
+        public MeterReadingController(IConfiguration configuration)
         {
-            _databaseContext = databaseContext;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        [HttpGet]
-        [Route("meter-reading-uploads")]
-        public async Task<IActionResult> DefaultEndpoint()
-        {
-            return Ok("Working");
-        }
-
-        [HttpPost]
-        [Route("meter-reading-uploads")]
+        [HttpPost("meter-reading-uploads")]
         public async Task<IActionResult> UploadMeterReadings(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return BadRequest("No file to upload.");
+                return BadRequest("File not provided.");
 
-            var meterReadings = new List<MeterReadingDto>();
+            var successfulReadings = 0;
+            var failedReadings = 0;
 
             using (var reader = new StreamReader(file.OpenReadStream()))
             {
-                while (!reader.EndOfStream)
+                var csvLines = reader.ReadToEnd().Split(Environment.NewLine);
+                using (var connection = new SqliteConnection(_connectionString))
                 {
-                    var line = await reader.ReadLineAsync();
-                    var data = line.Split(',');
-
-                    var meterReading = new MeterReadingDto()
+                    connection.Open(); 
+                    
+                    foreach (var line in csvLines.Skip(1))// Skip the header
                     {
-                        AccountId = int.Parse(data[0]),
-                        MeterReadingDate = DateTime.Parse(data[1]),
-                        MaterReadingValue = int.Parse(data[2])
-                    };
+                        if (string.IsNullOrWhiteSpace(line))
+                            continue;
+                        var fields = line.Split(',');
+                        if (fields.Length != 3)
+                        {
+                            failedReadings++;
+                            continue;
+                        }
+                        if (!int.TryParse(fields[0], out var accountId)
+                            || !int.TryParse(fields[1], out var meterReadingValue)
+                            || !System.Text.RegularExpressions.Regex.IsMatch(fields[1], @"^\d{5}$")
+                            || !DateTime.TryParseExact(fields[2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var readingDate))
+                        {
+                            failedReadings++;
+                            continue;
+                        }
 
-                    meterReadings.Add(meterReading);
+                        // Check if account exists
+                        var account = connection.QueryFirstOrDefault(
+                            "SELECT * FROM Accounts WHERE AccountId = @AccountId",
+                            new
+                            {
+                                AccountId = accountId
+                            });
+
+                        if (account == null)
+                        {
+                            failedReadings++;
+                            continue;
+                        }
+                        // Check if meter reading already exists for this account and value
+                        var existingReading = connection.QueryFirstOrDefault(
+                            "SELECT * FROM MeterReadings WHERE AccountId = @AccountId " +
+                            "AND MeterReadingValue = @MeterReadingValue",
+                            new
+                            {
+                                AccountId = accountId,
+                                MeterReadingValue = meterReadingValue
+                            });
+
+                        if (existingReading != null)
+                        {
+                            failedReadings++;
+                            continue;
+                        }
+
+                        // Insert valid reading
+                        var insertQuery = @" INSERT INTO MeterReadings (AccountId, MeterReadingValue, ReadingDate) 
+                    VALUES (@AccountId, @MeterReadingValue, @ReadingDate)";
+
+                        connection.Execute(
+                            insertQuery,
+                            new
+                            {
+                                AccountId = accountId,
+                                MeterReadingValue = meterReadingValue,
+                                ReadingDate = readingDate.ToString("yyyy-MM-dd")
+                            });
+                        successfulReadings++;
+                    }
                 }
             }
-
-            //Validate
-            foreach (var reading in meterReadings)
-            {
-                var accountExists = await _databaseContext.Accounts
-                    .AnyAsync(a => a.AccountId == reading.AccountId);
-
-                if (!accountExists)
-                    continue;
-
-                var existingReading = await _databaseContext.MeterReadings
-                    .AnyAsync(m => m.AccountId == reading.AccountId
-                    && m.MeterReadingDate == reading.MeterReadingDate);
-
-                if (existingReading)
-                    continue;
-
-                var meterReading = new MeterReading()
+            return Ok(
+                new
                 {
-                    AccountId = reading.AccountId,
-                    MeterReadingDate = reading.MeterReadingDate,
-                    MeterReadingValue = reading.MaterReadingValue
-                };
-
-                await _databaseContext.MeterReadings.AddAsync(meterReading);
-            }
-
-            await _databaseContext.SaveChangesAsync();
-
-            return Ok("Meter readings have been processed.");
+                    successfulReadings,
+                    failedReadings
+                });
         }
     }
 }

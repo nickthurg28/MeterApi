@@ -9,3 +9,5 @@ dotnet ef migrations add InitialCreate
 
 To update the db
 dotnet ef database update
+
+'ef migrations remove'
